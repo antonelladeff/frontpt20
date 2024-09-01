@@ -1,35 +1,34 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import IProduct from "@/interfaces/Product";
 import { useRouter } from "next/navigation";
 import { userSession } from "@/interfaces/types";
 import Swal from 'sweetalert2';
+import Image from 'next/image';  // Importa el componente Image
 
 const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id, price, categoryId }) => {
     const router = useRouter();
-    const [currentUserSession, setCurrentUserSession] = useState<userSession>();
+    const [authenticatedUser, setAuthenticatedUser] = useState<userSession>();
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            const userSessionLocal = localStorage.getItem("userSession");
-            setCurrentUserSession(JSON.parse(userSessionLocal!));
+        const userSessionFromStorage = localStorage.getItem("userSession");
+        if (userSessionFromStorage) {
+            setAuthenticatedUser(JSON.parse(userSessionFromStorage));
         }
     }, []);
 
-    const handleClick = () => {
-        if (!currentUserSession?.token) {
+    const addProductToCartHandler = () => {
+        if (!authenticatedUser?.token) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Debes estar logeado',
                 confirmButtonText: 'Aceptar'
             });
-
             router.push("/login");
         } else {
-            const cart: IProduct[] = JSON.parse(localStorage.getItem("cart") || "[]");
-            const productExist = cart.some((product: IProduct) => product.id === id);
+            const productsInCart: IProduct[] = JSON.parse(localStorage.getItem("cart") || "[]");
+            const isProductInCart = productsInCart.some((product: IProduct) => product.id === id);
 
-            if (productExist) {
+            if (isProductInCart) {
                 Swal.fire({
                     title: '¡Producto ya en el carrito!',
                     text: 'Este producto ya existe en tu carrito.',
@@ -38,7 +37,7 @@ const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id
                 });
                 router.push("/cart");
             } else {
-                cart.push({
+                productsInCart.push({
                     name,
                     image,
                     description,
@@ -47,7 +46,7 @@ const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id
                     price,
                     categoryId,
                 });
-                localStorage.setItem("cart", JSON.stringify(cart));
+                localStorage.setItem("cart", JSON.stringify(productsInCart));
 
                 Swal.fire({
                     title: '¡Producto añadido al carrito!',
@@ -63,11 +62,13 @@ const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id
     return (
         <div className="max-w-full sm:max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden my-6 p-4 sm:p-6">
             <div className="flex justify-center">
-                <img 
+                <Image 
                     className="w-full h-48 sm:h-56 md:h-64 object-cover sm:object-contain p-2"
                     src={image}
-                    alt={`${name} image`}
-                    style={{ maxWidth: '80%', height: 'auto' }}
+                    alt={name ? `${name} image` : 'Imagen del producto'}
+                    layout="responsive"
+                    width={500} // Ajusta según el tamaño de la imagen
+                    height={500} // Ajusta según el tamaño de la imagen
                 />
             </div>
             <div className="p-2">
@@ -78,7 +79,7 @@ const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id
                     <span className="text-base sm:text-lg text-gray-700 font-bold mt-2 sm:mt-0">Stock: {stock}</span>
                 </div>
                 <button
-                    onClick={handleClick}
+                    onClick={addProductToCartHandler}
                     className="mt-4 w-full bg-gray-900 text-white py-2 px-4 rounded hover:bg-gray-800 transition-colors"
                 >
                     Agregar al carrito
