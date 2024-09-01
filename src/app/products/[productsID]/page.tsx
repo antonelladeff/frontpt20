@@ -5,9 +5,8 @@ import ItemDetailProps from "@/interfaces/ItemDetail"; // Importa la interfaz de
 
 // Define el componente ItemDetail como una función asincrónica que recibe las propiedades de tipo ItemDetailProps.
 const ItemDetail: React.FC<ItemDetailProps> = async ({ params }) => {
-  const { productsID } = params; // Desestructura el ID del producto desde los parámetros.
-  const product = await getProductById(productsID); // Obtiene los detalles del producto usando el ID.
-
+  const { productsID } = params; 
+  const product = await getProductById(productsID); 
   return (
       <ProductDetail {...product} /> // Renderiza el componente ProductDetail pasando los detalles del producto como props.
   );

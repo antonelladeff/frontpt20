@@ -7,17 +7,11 @@ import Swal from 'sweetalert2';
 
 const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id, price, categoryId }) => {
     const router = useRouter();
-    const [userSession, setUserSession] = useState<userSession | null>(null);
+    const [userSession, setUserSession] = useState<userSession>();
 
     useEffect(() => {
         const userSessionLocal = localStorage.getItem("userSession");
-        try {
-            if (userSessionLocal) {
-                setUserSession(JSON.parse(userSessionLocal));
-            }
-        } catch (error) {
-            console.error("Error parsing user session:", error);
-        }
+        setUserSession(JSON.parse(userSessionLocal!));
     }, []);
 
     const handleClick = () => {
@@ -26,22 +20,21 @@ const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id
                 icon: 'warning',
                 title: 'Debes estar logeado',
                 confirmButtonText: 'Aceptar'
-            }).then(() => {
-                router.push("/login");
             });
+
+            router.push("/login");
         } else {
             const cart: IProduct[] = JSON.parse(localStorage.getItem("cart") || "[]");
-            const productExists = cart.some((product: IProduct) => product.id === id);
+            const productExist = cart.some((product: IProduct) => product.id === id);
 
-            if (productExists) {
+            if (productExist) {
                 Swal.fire({
                     title: '¡Producto ya en el carrito!',
                     text: 'Este producto ya existe en tu carrito.',
                     icon: 'info',
                     confirmButtonText: 'Aceptar'
-                }).then(() => {
-                    router.push("/cart");
                 });
+                router.push("/cart");
             } else {
                 cart.push({
                     name,
@@ -59,9 +52,8 @@ const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id
                     text: 'El producto ha sido agregado a tu carrito.',
                     icon: 'success',
                     confirmButtonText: 'Aceptar'
-                }).then(() => {
-                    router.push("/cart");
                 });
+                router.push("/cart");
             }
         }
     };
