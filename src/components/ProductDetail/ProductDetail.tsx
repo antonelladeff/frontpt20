@@ -22,7 +22,8 @@ const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id
                 confirmButtonText: 'Aceptar'
             });
 
-            router.push("/login");
+            router.push("/login"); 
+            
         } else {
             const cart: IProduct[] = JSON.parse(localStorage.getItem("cart") || "[]");
             const productExist = cart.some((product: IProduct) => product.id === id);
