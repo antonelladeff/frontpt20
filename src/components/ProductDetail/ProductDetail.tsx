@@ -1,9 +1,10 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import IProduct from "@/interfaces/Product";
 import { useRouter } from "next/navigation";
 import { userSession } from "@/interfaces/types";
 import Swal from 'sweetalert2';
-import Image from 'next/image';  // Importa el componente Image
+import Image from 'next/image'; 
 
 const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id, price, categoryId }) => {
     const router = useRouter();
