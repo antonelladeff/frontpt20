@@ -1,8 +1,8 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL; // URL base de la API
+const API_URL = process.env.NEXT_PUBLIC_API_URL; // URL base de la API
 
 export async function createOrder(productIds: number[], authToken: string) {
     try {
-        const response = await fetch(`${API_BASE_URL}/orders`, {
+        const response = await fetch(`${API_URL}/orders`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json", 
@@ -20,7 +20,7 @@ export async function createOrder(productIds: number[], authToken: string) {
 
 export async function getOrders(authToken: string) {
     try {
-        const response = await fetch(`${API_BASE_URL}/users/orders`, {
+        const response = await fetch(`${API_URL}/users/orders`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json", 
