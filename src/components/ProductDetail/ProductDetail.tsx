@@ -7,15 +7,17 @@ import Swal from 'sweetalert2';
 
 const ProductDetail: React.FC<IProduct> = ({ name, image, description, stock, id, price, categoryId }) => {
     const router = useRouter();
-    const [userSession, setUserSession] = useState<userSession>();
+    const [currentUserSession, setCurrentUserSession] = useState<userSession>();
 
     useEffect(() => {
-        const userSessionLocal = localStorage.getItem("userSession");
-        setUserSession(JSON.parse(userSessionLocal!));
+        if (typeof window !== "undefined") {
+            const userSessionLocal = localStorage.getItem("userSession");
+            setCurrentUserSession(JSON.parse(userSessionLocal!));
+        }
     }, []);
 
     const handleClick = () => {
-        if (!userSession?.token) {
+        if (!currentUserSession?.token) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Debes estar logeado',
