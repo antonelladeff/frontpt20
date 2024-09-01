@@ -1,39 +1,37 @@
-const APIURL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL; // URL base de la API
 
-
-export async function createOrder(products: number[], token: string) {
+export async function createOrder(productIds: number[], authToken: string) {
     try {
-        const res = await fetch(`${APIURL}/orders`, {
+        const response = await fetch(`${API_BASE_URL}/orders`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json", 
-                Authorization: token, 
+                Authorization: authToken, 
             },
-            body: JSON.stringify({ products }), 
+            body: JSON.stringify({ products: productIds }), 
         });
 
-        const orders = await res.json();
-        return orders; 
-    } catch (error: any) {
-        throw new Error(error);
+        const createdOrder = await response.json(); // Orden creada
+        return createdOrder; 
+    } catch (fetchError: any) {
+        throw new Error(fetchError);
     }
 }
 
-
-export async function getOrders(token: string) {
+export async function getOrders(authToken: string) {
     try {
-        const res = await fetch(`${APIURL}/users/orders`, {
+        const response = await fetch(`${API_BASE_URL}/users/orders`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json", 
-                Authorization: token, 
+                Authorization: authToken, 
             },
         });
 
-        const orders = await res.json();
-        return orders; 
-    } catch (error: any) {
-        throw new Error(error);
+        const fetchedOrders = await response.json(); // Órdenes obtenidas
+        return fetchedOrders; 
+    } catch (fetchError: any) {
+        throw new Error(fetchError);
     }
 }
 
