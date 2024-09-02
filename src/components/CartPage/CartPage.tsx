@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { createOrder } from "@/helpers/orders.helper";
@@ -43,19 +41,32 @@ const CartPage = () => {
     }, [userSession?.userData]);
 
     const handleClick = async () => {
-        const idProducts = cart?.map((product) => product.id);
-        await createOrder(idProducts, userSession?.token!);
-        Swal.fire({
-            title: '¡Compra realizada con éxito!',
-            text: 'Tu compra se ha completado correctamente.',
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
+        const result = await Swal.fire({
+            title: '¿Desea hacer la compra?',
+            text: "Confirma si deseas proceder con la compra de los productos seleccionados.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, comprar',
+            cancelButtonText: 'Cancelar'
         });
 
-        setCart([]);
-        setTotalCart(0);
-        router.push("/orders");
-        localStorage.setItem("cart", "[]");
+        if (result.isConfirmed) {
+            const idProducts = cart?.map((product) => product.id);
+            await createOrder(idProducts, userSession?.token!);
+            Swal.fire({
+                title: '¡Compra realizada con éxito!',
+                text: 'Tu compra se ha completado correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
+
+            setCart([]);
+            setTotalCart(0);
+            router.push("/orders");
+            localStorage.setItem("cart", "[]");
+        }
     };
 
     const handleRemove = (id: number) => {
@@ -65,7 +76,7 @@ const CartPage = () => {
         localStorage.setItem("cart", JSON.stringify(updatedCart));
     };
 
-return (
+    return (
         <div className="min-h-screen flex justify-center items-center bg-gray-100 p-4 md:p-6 lg:p-8">
             <div className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-md border border-gray-200">
                 <div className="space-y-6">
